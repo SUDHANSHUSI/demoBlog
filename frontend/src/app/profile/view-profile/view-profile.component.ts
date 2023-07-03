@@ -16,12 +16,12 @@ export class ViewProfileComponent implements OnInit {
   profileId!: string;
   isloading: boolean = false;
   // profile!: Profile;
-profile: any = { followersCount: 0 }; 
+  profile: any = { followersCount: 0 };
   posts: Post[] = [];
   url: any;
-  userId!: string ;
-   isFollowing: boolean = false;
-   showFollowersModal: boolean = false;
+  userId!: string;
+  isFollowing: boolean = false;
+  showFollowersModal: boolean = false;
   showFollowingModal: boolean = false;
 
   constructor(
@@ -29,7 +29,7 @@ profile: any = { followersCount: 0 };
     private authService: AuthService,
     public route: ActivatedRoute,
     public router: Router,
-    private toastr:ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -53,7 +53,7 @@ profile: any = { followersCount: 0 };
     this.profileService.getProfileByUsername(uname).subscribe((profile) => {
       this.profile = profile.profile;
       this.isloading = false;
-       this.checkIfFollowing();
+      this.checkIfFollowing();
     });
   }
 
@@ -83,24 +83,42 @@ profile: any = { followersCount: 0 };
 
   followProfile() {
     if (!this.isFollowing) {
-      this.profileService.followProfile(this.profile._id).subscribe((message) => {
-        this.toastr.success('successfully followed this profile.', 'Success');
-        this.isFollowing = true;
-        this.router.navigate(['/profile'])
-      });
+      if(this.authService.isLoggedIn()){
+      this.profileService
+        .followProfile(this.profile._id)
+        .subscribe((message) => {
+          this.toastr.success('successfully followed this profile.', 'Success');
+          this.isFollowing = true;
+          this.router.navigate(['/profile']);
+        });
+      }else{
+          this.toastr.warning('Please login to follow this profile.', 'Login Required');
+      this.router.navigate(['/login']);
+      }
     }
   }
 
   unfollowProfile() {
     if (this.isFollowing) {
-      this.profileService.unfollowProfile(this.profile._id).subscribe((message) => {
-        this.toastr.success('successfully unfollowed this profile.', 'Success');
-        this.isFollowing = false;
-        this.router.navigate(['/profile'])
-      });
+      if(this.authService.isLoggedIn()){
+      this.profileService
+        .unfollowProfile(this.profile._id)
+        .subscribe((message) => {
+          this.toastr.success(
+            'successfully unfollowed this profile.',
+            'Success'
+          );
+          this.isFollowing = false;
+          this.router.navigate(['/profile']);
+        });
+      }
+      else{
+      this.toastr.warning('Please login to unfollow this profile.', 'Login Required');
+      this.router.navigate(['/login']);
+
+      }
     }
-  } 
-  
+  }
 
   checkIfFollowing() {
     if (this.profile.followers.includes(this.userId)) {
@@ -108,7 +126,7 @@ profile: any = { followersCount: 0 };
     }
   }
 
-    openFollowersModal() {
+  openFollowersModal() {
     this.showFollowersModal = true;
   }
 
@@ -123,6 +141,4 @@ profile: any = { followersCount: 0 };
   closeFollowingModal() {
     this.showFollowingModal = false;
   }
-
 }
-
