@@ -5,6 +5,7 @@ import { AuthService } from '../../auth/auth.service';
 import { Post } from '../../posts/post.model';
 import { ProfileService } from '../../services/profile.service';
 import { Profile } from '../profile.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-view-profile',
@@ -14,7 +15,8 @@ import { Profile } from '../profile.model';
 export class ViewProfileComponent implements OnInit {
   profileId!: string;
   isloading: boolean = false;
-  profile!: Profile;
+  // profile!: Profile;
+profile: any = { followersCount: 0 }; 
   posts: Post[] = [];
   url: any;
   userId!: string ;
@@ -26,7 +28,8 @@ export class ViewProfileComponent implements OnInit {
     private profileService: ProfileService,
     private authService: AuthService,
     public route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private toastr:ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -81,8 +84,9 @@ export class ViewProfileComponent implements OnInit {
   followProfile() {
     if (!this.isFollowing) {
       this.profileService.followProfile(this.profile._id).subscribe((message) => {
-        console.log(message);
+        this.toastr.success('successfully followed this profile.', 'Success');
         this.isFollowing = true;
+        this.router.navigate(['/profile'])
       });
     }
   }
@@ -90,8 +94,9 @@ export class ViewProfileComponent implements OnInit {
   unfollowProfile() {
     if (this.isFollowing) {
       this.profileService.unfollowProfile(this.profile._id).subscribe((message) => {
-        console.log(message);
+        this.toastr.success('successfully unfollowed this profile.', 'Success');
         this.isFollowing = false;
+        this.router.navigate(['/profile'])
       });
     }
   } 

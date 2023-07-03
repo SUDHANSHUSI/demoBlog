@@ -1,4 +1,3 @@
-
 .bg-light{
     background-color:white !important;
 }
@@ -13,6 +12,9 @@
 }
 .navbar-nav .nav-item{
     padding: 10px 5px;
+}
+.nav-link {
+  cursor: pointer;
 }
 
 .navbar-nav .nav-item.active a{

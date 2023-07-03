@@ -1,6 +1,6 @@
 <div class="container">
   <div class="alert alert-danger" *ngIf="error">
-    <p>{{ error.status }} - {{ error.error.message }}</p>
+    <p>{{ error.error.message }}</p>
   </div>
   <div *ngIf="isloading" style="text-align: center" class="loading-text">
     <app-spinner></app-spinner>
@@ -119,10 +119,9 @@
 
           <span>{{ post.likeCount }}</span>
         </div>
-        <br />
+        <br />      
 
-        <!-- Display comments -->
-        <div *ngIf="post.comments.length > 0">
+        <div>
           <h3>
             <a data-toggle="collapse" href="#commentsCollapse" role="button"
               >Comments:</a
@@ -131,7 +130,7 @@
           <div id="commentsCollapse" class="collapse">
             <ul>
               <li *ngFor="let comment of post.comments">
-                {{ comment.comment }}
+                {{ comment?.comment }}
               </li>
             </ul>
           </div>

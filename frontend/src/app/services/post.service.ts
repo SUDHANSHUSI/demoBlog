@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Post } from '../posts/post.model';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, Subject, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth/auth.service';
@@ -206,6 +206,7 @@ export class PostService {
   ): Observable<{ success: boolean; message: string; likeCount: number }> {
     if (!this.authService.getIsAuth()) {
       this.toastr.warning('Please log in to like the post.', 'Login Required');
+      this.router.navigate(['/login']);
       return this.http.get<{
         success: boolean;
         message: string;
@@ -219,30 +220,86 @@ export class PostService {
     }>(`${BACKEND_URL}/${postId}/likes`);
   }
 
-  addComment(postId: string, comment: string) {
-    if (!this.authService.getIsAuth()) {
-      this.toastr.warning('Please log in to add a comment.', 'Login Required');
-      return;
-    }
-    const commentData = { comment };
-    this.http
-      .post<{ success: boolean; message: string; comment: any }>(
-        `${BACKEND_URL}/${postId}/comment`,
-        commentData
-      )
-      .subscribe(
-        (responseData) => {
-          const updatedPost = this.posts.find((post) => post.id === postId);
-          if (updatedPost) {
-            updatedPost.comments.unshift(responseData.comment);
-            this.postsUpdated.next([...this.posts]);
-          }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
+  // addComment(postId: string, comment: string) {
+  //   if (!this.authService.getIsAuth()) {
+  //     this.toastr.warning('Please log in to add a comment.', 'Login Required');
+  //     return;
+  //   }
+  //   const commentData = { comment };
+  //   this.http
+  //     .post<{ success: boolean; message: string; comment: any }>(
+  //       `${BACKEND_URL}/${postId}/comment`,
+  //       commentData
+  //     )
+  //     .subscribe(
+  //       (responseData) => {
+  //         const updatedPost = this.posts.find((post) => post.id === postId);
+  //         if (updatedPost) {
+  //           updatedPost.comments.unshift(responseData.comment);
+  //           this.postsUpdated.next([...this.posts]);
+  //         }
+  //       },
+  //       (error) => {
+  //         console.error(error);
+  //       }
+  //     );
+  // }
+
+
+// addComment(postId: string, comment: string) {
+//   if (!this.authService.getIsAuth()) {
+//     this.toastr.warning('Please log in to add a comment.', 'Login Required');
+//     return EMPTY;
+//   }
+//   const commentData = { comment };
+//   return this.http.post<{ success: boolean; message: string; comment: any }>(
+//     `${BACKEND_URL}/${postId}/comment`,
+//     commentData
+//   ).pipe(
+//     tap((responseData:any) => {
+//       const updatedPost = this.posts.find((post) => post.id === postId);
+//       if (updatedPost) {
+//         updatedPost.comments.unshift(responseData.comment);
+//         this.postsUpdated.next([...this.posts]);
+//       }
+//     }),
+//     catchError((error) => {
+//       console.error(error);
+//       return throwError(error);
+//     })
+//   );
+// }
+
+addComment(postId: string, comment: string) {
+  if (!this.authService.getIsAuth()) {
+    this.toastr.warning('Please log in to add a comment.', 'Login Required');
+    this.router.navigate(['/login']);
+    return EMPTY;
   }
+
+  const commentData = { comment };
+  return this.http
+    .post<{ success: boolean; message: string; comment: any }>(
+      `${BACKEND_URL}/${postId}/comment`,
+      commentData
+    )
+    .pipe(
+      tap((responseData: any) => {
+        const newComment = responseData.comment;
+        const updatedPost = this.posts.find((post) => post.id === postId);
+        if (updatedPost) {
+          updatedPost.comments.unshift(newComment);
+          this.postsUpdated.next([...this.posts]);
+        }
+      }),
+      catchError((error) => {
+        console.error(error);
+        return throwError(error);
+      })
+    );
+}
+
+
   searchPosts(searchTerm: string): Observable<Post[]> {
     const queryParams = { q: searchTerm };
     return this.http

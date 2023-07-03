@@ -103,7 +103,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       }
     );
   }
-  
+
   OnDelete(postId: string) {
     this.postsService.deletePost(postId);
   }
@@ -134,9 +134,16 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-  onAddComment(postId: string, comment: string) {
-    this.postsService.addComment(postId, comment);
-    window.location.reload();
+    onAddComment(postId: string, comment: string) {
+    this.postsService.addComment(postId, comment).subscribe(
+      (newComment) => {
+        this.comment = '';
+        this.post.comments.push(newComment.comment);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   getPostUserByCreatorId(id: string) {

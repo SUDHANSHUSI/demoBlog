@@ -62,9 +62,9 @@
     </button>
   </form>
 </div> -->
-<hr>
+<hr />
 <div class="container">
-  <div *ngIf="isLoading" style="text-align: center;" class="loading-text">
+  <div *ngIf="isLoading" style="text-align: center" class="loading-text">
     <app-spinner></app-spinner>
   </div>
   <form [formGroup]="form" (submit)="onSavePost()">
@@ -102,6 +102,7 @@
       >
         Pick Image
       </button>
+      <br /><br />
       <input
         type="file"
         class="form-control"

@@ -55,7 +55,7 @@
             Switch to {{ isLoginMode ? "Sign Up" : "Login" }}
           </button>
 
-          <a routerLink="/forgotPassword" class="btn btn-link"
+          <a  *ngIf="isLoginMode" routerLink="/forgotPassword" class="btn btn-link"
             >Forgot Password</a
           >
         </div>

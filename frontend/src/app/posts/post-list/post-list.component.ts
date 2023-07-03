@@ -5,6 +5,7 @@ import { Post } from '../post.model';
 import { AuthService } from '../../auth/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { Profile } from '../../profile/profile.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post-list',
@@ -28,7 +29,8 @@ export class PostListComponent implements OnInit, OnDestroy {
   constructor(
     private ps: PostService,
     private authService: AuthService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private router:Router,
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +130,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   onSearch(searchTerm: string) {
     this.ps.searchPosts(searchTerm).subscribe((posts) => {
       this.posts = posts;
+      this.router.navigate(['/Home']);
     });
   }
 
