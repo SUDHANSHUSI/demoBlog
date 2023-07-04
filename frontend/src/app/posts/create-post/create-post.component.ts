@@ -6,6 +6,7 @@ import { mimeType } from './mime-type.validator';
 import { PostService } from '../../services/post.service';
 import { ProfileService } from 'src/app/services/profile.service';
 import { ToastrService } from 'ngx-toastr';
+import { MarkdownService } from 'ngx-markdown';
 
 @Component({
   selector: 'app-create-post',
@@ -21,12 +22,14 @@ export class CreatePostComponent implements OnInit {
   post!: Post;
   private mode = 'create';
   private postId: string = '';
+
   constructor(
     private ps: PostService,
     public route: ActivatedRoute,
     public profileService: ProfileService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private markdownService:MarkdownService
   ) {}
 
   ngOnInit(): void {

@@ -92,10 +92,13 @@ router.get("", async (req, res) => {
   try {
     const documents = await Post.find();
 
-    if (documents) {
+    const sortedOnLikes = documents?.sort((a, b) => a.likeCount - b.likeCount);
+    console.log(sortedOnLikes);
+
+    if (sortedOnLikes) {
       res.status(200).json({
         message: "Posts fetched successfully!",
-        posts: documents,
+        posts: sortedOnLikes,
       });
     } else {
       res.status(404).json({ message: "Posts not found!" });
@@ -301,8 +304,8 @@ router.get("/search/post", async (req, res) => {
       $or: [
         { title: { $regex: regex } },
         { category: { $regex: regex } },
-        { content: { $regex: regex } }
-      ]
+        { content: { $regex: regex } },
+      ],
     });
 
     if (posts.length > 0) {

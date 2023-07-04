@@ -28,6 +28,7 @@ import { MatIconModule} from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MarkdownModule } from 'ngx-markdown';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatInputModule,
     MatButtonModule,
     ToastrModule.forRoot(),
+    MarkdownModule.forRoot(),
   ],
   providers: [
     PostService,

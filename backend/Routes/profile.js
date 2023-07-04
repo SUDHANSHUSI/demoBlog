@@ -115,10 +115,15 @@ router.put(
 router.get("/profiles", async (req, res, next) => {
   try {
     const prof = await Profile.find();
-    if (prof.length > 0) {
+
+    const sortedProfiles = prof?.sort(
+      (a, b) => b.followersCount - a.followersCount
+    );
+
+    if (sortedProfiles.length > 0) {
       res.status(200).json({
         message: "Profiles fetched successfully!",
-        profile: prof,
+        profile: sortedProfiles,
       });
     } else {
       res.status(404).json({ message: "Profiles not found!" });
@@ -136,7 +141,6 @@ router.get("/viewprofile", checkAuth, async (req, res, next) => {
     const prof = await Profile.findOne({
       creator: req.userData.userId,
     });
-
 
     prof.followersCount = prof.followers.length;
     prof.followingCount = prof.following.length;
@@ -211,7 +215,6 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-
 // Follow Profile
 router.post("/follow/:id", checkAuth, async (req, res, next) => {
   try {
@@ -245,8 +248,6 @@ router.post("/follow/:id", checkAuth, async (req, res, next) => {
     res.status(500).json({ message: "Error following profile" });
   }
 });
-
-
 
 // Unfollow Profile
 router.post("/unfollow/:id", checkAuth, async (req, res, next) => {
@@ -282,6 +283,5 @@ router.post("/unfollow/:id", checkAuth, async (req, res, next) => {
     res.status(500).json({ message: "Error unfollowing profile" });
   }
 });
-
 
 module.exports = router;
