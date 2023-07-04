@@ -130,7 +130,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   onSearch(searchTerm: string) {
     this.ps.searchPosts(searchTerm).subscribe((posts) => {
       this.posts = posts;
-      this.router.navigate(['/Home']);
+      // this.router.navigate(['/Home']);
     });
   }
 

@@ -93,7 +93,6 @@ router.get("", async (req, res) => {
     const documents = await Post.find();
 
     const sortedOnLikes = documents?.sort((a, b) => a.likeCount - b.likeCount);
-    // console.log(sortedOnLikes);
 
     if (sortedOnLikes) {
       res.status(200).json({

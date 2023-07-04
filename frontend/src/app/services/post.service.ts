@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Post } from '../posts/post.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, EMPTY, Observable, Subject, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -220,56 +220,6 @@ export class PostService {
     }>(`${BACKEND_URL}/${postId}/likes`);
   }
 
-  // addComment(postId: string, comment: string) {
-  //   if (!this.authService.getIsAuth()) {
-  //     this.toastr.warning('Please log in to add a comment.', 'Login Required');
-  //     return;
-  //   }
-  //   const commentData = { comment };
-  //   this.http
-  //     .post<{ success: boolean; message: string; comment: any }>(
-  //       `${BACKEND_URL}/${postId}/comment`,
-  //       commentData
-  //     )
-  //     .subscribe(
-  //       (responseData) => {
-  //         const updatedPost = this.posts.find((post) => post.id === postId);
-  //         if (updatedPost) {
-  //           updatedPost.comments.unshift(responseData.comment);
-  //           this.postsUpdated.next([...this.posts]);
-  //         }
-  //       },
-  //       (error) => {
-  //         console.error(error);
-  //       }
-  //     );
-  // }
-
-
-// addComment(postId: string, comment: string) {
-//   if (!this.authService.getIsAuth()) {
-//     this.toastr.warning('Please log in to add a comment.', 'Login Required');
-//     return EMPTY;
-//   }
-//   const commentData = { comment };
-//   return this.http.post<{ success: boolean; message: string; comment: any }>(
-//     `${BACKEND_URL}/${postId}/comment`,
-//     commentData
-//   ).pipe(
-//     tap((responseData:any) => {
-//       const updatedPost = this.posts.find((post) => post.id === postId);
-//       if (updatedPost) {
-//         updatedPost.comments.unshift(responseData.comment);
-//         this.postsUpdated.next([...this.posts]);
-//       }
-//     }),
-//     catchError((error) => {
-//       console.error(error);
-//       return throwError(error);
-//     })
-//   );
-// }
-
 addComment(postId: string, comment: string) {
   if (!this.authService.getIsAuth()) {
     this.toastr.warning('Please log in to add a comment.', 'Login Required');
@@ -300,29 +250,50 @@ addComment(postId: string, comment: string) {
 }
 
 
+  // searchPosts(searchTerm: string): Observable<Post[]> {
+  //   const queryParams = { q: searchTerm };
+  //   return this.http
+  //     .get<{ message: string; posts: any }>(`${BACKEND_URL}/search/post`, {
+  //       params: queryParams,
+  //     })
+  //     .pipe(
+  //       map((responseData) => {
+  //         return responseData.posts.map((post: any) => {
+  //           return {
+  //             title: post.title,
+  //             content: post.content,
+  //             id: post._id,
+  //             imagePath: post.imagePath,
+  //             creator: post.creator,
+  //             postDate: post.postDate,
+  //             category: post.category,
+  //             likes: post.likes,
+  //             comments: post.comments,
+  //             likeCount: post.likeCount,
+  //           };
+  //         });
+  //       })
+  //     );
+  // }
   searchPosts(searchTerm: string): Observable<Post[]> {
-    const queryParams = { q: searchTerm };
-    return this.http
-      .get<{ message: string; posts: any }>(`${BACKEND_URL}/search/post`, {
-        params: queryParams,
+    const queryParams = new HttpParams().set('q', searchTerm);
+    return this.http.get<{ message: string; posts: any }>(`${BACKEND_URL}/search/post`, {
+      params: queryParams,
+    }).pipe(
+      map((responseData) => {
+        return responseData.posts.map((post: any) => ({
+          title: post.title,
+          content: post.content,
+          id: post._id,
+          imagePath: post.imagePath,
+          creator: post.creator,
+          postDate: post.postDate,
+          category: post.category,
+          likes: post.likes,
+          comments: post.comments,
+          likeCount: post.likeCount,
+        } as Post));
       })
-      .pipe(
-        map((responseData) => {
-          return responseData.posts.map((post: any) => {
-            return {
-              title: post.title,
-              content: post.content,
-              id: post._id,
-              imagePath: post.imagePath,
-              creator: post.creator,
-              postDate: post.postDate,
-              category: post.category,
-              likes: post.likes,
-              comments: post.comments,
-              likeCount: post.likeCount,
-            };
-          });
-        })
-      );
+    );
   }
 }
