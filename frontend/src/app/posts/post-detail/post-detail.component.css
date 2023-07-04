@@ -1,0 +1,181 @@
+.img {
+  margin-top: 5rem;
+  text-align: center;
+  margin: 3rem auto;
+}
+
+.img-responsive {
+  width: 80%;
+}
+.main {
+  margin: 0 auto;
+}
+/* Modal Styles */
+.modal {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+  max-width: 500px;
+}
+
+.modal-content {
+  background-color: #fff; 
+}
+
+.modal-header {
+  background-color: #f5f5f5;
+  border-bottom: none; 
+}
+
+.modal-title {
+  color: #333; 
+}
+
+.modal-body {
+  padding: 20px; 
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+.loading-text {
+  margin-top: 20px; 
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+}
+.mat-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.mat-label {
+  display: block;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.mat-input-element {
+  display: block;
+  width: 100%;
+  padding: 0.4375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.mat-raised-button {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.6875rem 1.375rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.mat-raised-button:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.like-button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.like-icon {
+  font-size: 24px;
+  transition: color 0.3s ease;
+  color: black;
+}
+
+.like-icon.liked {
+ color : red;
+}
+
+/* Style for the comments section */
+.comments-section {
+  margin-top: 20px;
+}
+
+/* Style for the "Comments" heading */
+.comments-heading {
+  margin-bottom: 10px;
+}
+
+/* Style for the dropdown toggle link */
+.comments-toggle {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.comments-toggle:hover {
+  text-decoration: underline;
+}
+
+/* Style for the collapsed content */
+.comments-content {
+  margin-top: 10px;
+  display: flex;
+}
+
+/* Style for the expanded content */
+.comments-content.show {
+  display: inline-flexbox;
+}
+
+/* Edit Post */
+.list-group-item-action:first-child {
+  margin-bottom: 10px;
+  background-color: #007bff;
+  color: #fff;
+  width: fit-content;
+}
+
+/* Delete Post Button */
+.list-group-item-action:last-child {
+  margin-bottom: 30px;
+  background-color: #dc3545;
+  color: #fff;
+  cursor: pointer;
+  width: fit-content;
+}
+/* Category input */
+#category {
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 10px;
+  background-color: #dc3545;
+  color: #fff;
+  width: fit-content;
+  cursor: auto;
+}

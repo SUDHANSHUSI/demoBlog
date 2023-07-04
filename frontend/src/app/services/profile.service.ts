@@ -1,0 +1,194 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { Profile } from '../profile/profile.model';
+import { environment } from '../../environments/environment';
+const BACKEND_URL = environment.apiUrl + '/profile';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ProfileService {
+  private profile!: Profile;
+  private isProfileSet: boolean = false;
+  private updatedProfile = new Subject<Profile>();
+  public err = new BehaviorSubject<any>(null);
+  constructor(private http: HttpClient, private router: Router) {}
+
+  getProfileUpdateListener() {
+    return this.updatedProfile.asObservable();
+  }
+
+  getIsProfile() {
+    return this.profile;
+  }
+
+  getIsProfileSet() {
+    return this.isProfileSet;
+  }
+
+  addProfile(title: string, content: string, imgpath: File) {
+    const postData = new FormData();
+    postData.append('username', title);
+    postData.append('bio', content);
+    postData.append('image', imgpath, title);
+
+    this.http
+      .post<{ message: string; post: Profile }>(
+        BACKEND_URL + '/create',
+        postData
+      )
+      .subscribe(
+        (responseData) => {
+          this.router.navigate(['/']);
+          this.err.next(null);
+        },
+        (err) => {
+          this.err.next(err);
+        }
+      );
+  }
+
+  updateProfile(
+    id: string,
+    username: string,
+    bio: string,
+    image: File | string
+  ) {
+    let profileData: Profile | FormData;
+    if (typeof image === 'object') {
+      profileData = new FormData();
+      profileData.append('id', id);
+      profileData.append('username', username);
+      profileData.append('bio', bio);
+      profileData.append('image', image, username);
+    } else {
+      profileData = {
+        _id: id,
+        username: username,
+        bio: bio,
+        imagePath: image,
+        creator: '',
+        followers:[],
+        following:[],
+        followersCount:0,
+        followingCount:0,
+      };
+    }
+
+    this.http.put(BACKEND_URL + '/edit/' + id, profileData).subscribe(
+      (response) => {
+        this.err.next(null);
+        this.router.navigate(['/profile']);
+      },
+      (err) => {
+        console.log(err);
+        this.err.next(err);
+      }
+    );
+  }
+
+  // getProfile() {
+  //   this.http
+  //     .get<{ profile: any; message: string }>(BACKEND_URL + '/viewprofile')
+  //     .subscribe(
+  //       (profile) => {
+  //         console.log(profile);
+  //         let prof = profile.profile;
+  //         this.profile = prof;
+  //         this.isProfileSet = true;
+  //         this.updatedProfile.next(profile.profile);
+  //         this.saveProfileData(profile.profile);
+  //       },
+  //       (err) => {}
+  //     );
+  // }
+
+  getProfile() {
+    this.http
+      .get<{ profile: any; message: string }>(BACKEND_URL + '/profiles')
+      .subscribe(
+        (response) => {
+          console.log(response);
+          const sortedProfiles = response.profile;
+          if (sortedProfiles.length > 0) {
+            this.profile = sortedProfiles;
+            this.isProfileSet = true;
+            this.updatedProfile.next(sortedProfiles);
+            this.saveProfileData(sortedProfiles);
+          } else {
+            console.log("profile not found");
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+  
+
+  getProfileByCreatorId() {
+    return this.http.get<{ profile: any; message: string }>(
+      BACKEND_URL + '/viewprofile'
+    );
+  }
+
+  getPostUserByCreatorId(creatorId: any) {
+    return this.http.get<{ profile: any; message: string }>(
+      BACKEND_URL + '/bycreator/' + creatorId
+    );
+  }
+
+  getAllUsers() {
+    return this.http.get<{ profile: any; message: string }>(
+      BACKEND_URL + '/profiles'
+    );
+  }
+
+  getProfileByUsername(uname: string) {
+    return this.http.get<{ profile: any; message: string }>(
+      BACKEND_URL + '/' + uname
+    );
+  }
+
+  getMyPost(uname: string) {
+    return this.http.get<{ post: any; message: string }>(
+      BACKEND_URL + '/' + uname + '/mypost'
+    );
+  }
+
+  saveProfileData(profile: any) {
+    localStorage.setItem('profile', profile);
+    localStorage.setItem('uname', profile.username);
+  }
+
+  autogetProfile() {
+    const profile = localStorage.getItem('profile');
+    if (profile) {
+      this.isProfileSet = true;
+    }
+  }
+
+  followProfile(profileId: string) {
+    return this.http
+      .post<{ message: string }>(`${BACKEND_URL}/follow/${profileId}`, {})
+      .pipe(
+        map((response) => {
+          return response.message;
+        })
+      );
+  }
+
+  unfollowProfile(profileId: string) {
+    return this.http
+      .post<{ message: string }>(`${BACKEND_URL}/unfollow/${profileId}`, {})
+      .pipe(
+        map((response) => {
+          return response.message;
+        })
+      );
+  }
+}

@@ -1,0 +1,163 @@
+.card{
+    min-height: 150px;
+}
+.card-body {
+    display: flex;
+    flex-wrap: nowrap;
+    min-height: 150px;
+  }
+  
+  .card-body>div {
+    padding: 5px;
+  }
+
+  .body-text{
+    flex: 3;
+  }
+
+  .bg-image{
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-position: left top;
+  }
+
+  @media screen and (max-width:551px){
+    .body-text{
+        flex: 2;
+      }
+  }
+
+  .alert-danger{
+    margin: 3rem auto;
+    width: 50%;
+  }
+.podcast-entry .image {
+  width: 250px;
+  height: auto;
+}
+
+.podcast-entry .image {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* height: 300px; */
+}
+
+.podcast-entry .text {
+  width: 100%;
+  padding: 20px;
+  padding-left: 40px;
+}
+
+.featured-user h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.featured-user ul li {
+  margin-bottom: 20px;
+  box-shadow: 0 5px 40px -10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 25px 15px;
+}
+.featured-user ul li a {
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+}
+
+.featured-user ul li a img {
+  width: 65px;
+  float: left;
+  height: 65px;
+  border-radius: 50%;
+}
+@media (min-width: 768px){
+  .site-section {
+    padding: 5em 0;
+}
+
+  .podcast-entry .text {
+    width: calc(100% - 100px);
+}
+}
+
+
+@media screen and (max-width:551px){
+  .hero h1 {
+    margin-top:25px;
+    font-size: 80px;
+    font-weight: bold;
+}
+
+.podcast-entry .image{
+  height: 250px;
+  width: auto;
+}
+
+.podcast-entry .text{
+  padding: 25px;
+}
+}
+/* Categories Section */
+.categories {
+  margin-top: 50px;
+}
+
+.categories h3 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.categories ul {
+  padding: 0;
+  margin: 0;
+}
+
+.categories li {
+  margin-bottom: 10px;
+}
+
+.categories a {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.categories a:hover {
+  background-color: #e1e1e1;
+  cursor: pointer;
+}
+
+.input-group.mb-3 {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-control {
+  border-radius: 25px 0 0 25px;
+  box-shadow: none;
+  height: 60px;
+  font-size: 20px;
+}
+
+.input-group-append {
+  margin-left: -1px;
+}
+
+.btn.btn-primary {
+  border-radius: 0 25px 25px 0;
+  height: 60px;
+  font-size: 20px;
+  
+}
