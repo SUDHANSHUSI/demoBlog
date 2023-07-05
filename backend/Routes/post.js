@@ -242,7 +242,10 @@ router.post("/:postId/comment", checkAuth, async (req, res) => {
   };
   post.comments.unshift(newComment);
 
+  
   await post.save();
+
+
 
   return res.status(200).json({
     success: true,

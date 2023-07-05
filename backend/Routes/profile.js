@@ -137,7 +137,7 @@ router.get("/profiles", async (req, res, next) => {
 });
 
 router.get("/viewprofile", checkAuth, async (req, res, next) => {
-  console.log("first");
+  // console.log("first");
   try {
     const prof = await Profile.findOne({
       creator: req.userData.userId,
@@ -151,7 +151,7 @@ router.get("/viewprofile", checkAuth, async (req, res, next) => {
         select: "_id username",
       });
 
-    console.log("prof.followers.length", prof.followers);
+    // console.log("prof.followers.length", prof.followers);
 
     prof.followersCount = prof.followers.length;
     prof.followingCount = prof.following.length;
@@ -294,5 +294,6 @@ router.post("/unfollow/:id", checkAuth, async (req, res, next) => {
     res.status(500).json({ message: "Error unfollowing profile" });
   }
 });
+
 
 module.exports = router;

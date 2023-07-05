@@ -27,17 +27,17 @@ app.use("/api/profile", profileRoutes);
 // app.use("/api/friends",folUnfolRoutes);
 
 // Get posts by page
-app.get("/api/posts", (req, res) => {
-  const start = parseInt(req.query._start);
-  const end = parseInt(req.query._end);
-  const slicedPosts = posts.slice(start, end);
-  res.json(slicedPosts);
-});
+// app.get("/api/posts", (req, res) => {
+//   const start = parseInt(req.query._start);
+//   const end = parseInt(req.query._end);
+//   const slicedPosts = posts.slice(start, end);
+//   res.json(slicedPosts);
+// });
 
-// Get total number of posts
-app.get("/api/posts/count", (req, res) => {
-  res.json(posts.length);
-});
+// // Get total number of posts
+// app.get("/api/posts/count", (req, res) => {
+//   res.json(posts.length);
+// });
 
 // app.get('*',(req,res)=>{
 //     res.sendFile(path.join(__dirname,"frontend","dist","myblog","index.html"))
