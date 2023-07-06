@@ -10,7 +10,6 @@
 .main {
   margin: 0 auto;
 }
-/* Modal Styles */
 .modal {
   background: rgba(0, 0, 0, 0.5);
 }
@@ -120,17 +119,14 @@
   color:red;
 }
 
-/* Style for the comments section */
 .comments-section {
   margin-top: 20px;
 }
 
-/* Style for the "Comments" heading */
 .comments-heading {
   margin-bottom: 10px;
 }
 
-/* Style for the dropdown toggle link */
 .comments-toggle {
   color: #333;
   text-decoration: none;
@@ -141,18 +137,15 @@
   text-decoration: underline;
 }
 
-/* Style for the collapsed content */
 .comments-content {
   margin-top: 10px;
   display: flex;
 }
 
-/* Style for the expanded content */
 .comments-content.show {
   display: inline-flexbox;
 }
 
-/* Edit Post */
 .list-group-item-action:first-child {
   margin-bottom: 10px;
   background-color: #007bff;
@@ -160,7 +153,6 @@
   width: fit-content;
 }
 
-/* Delete Post Button */
 .list-group-item-action:last-child {
   margin-bottom: 30px;
   background-color: #dc3545;
@@ -168,7 +160,7 @@
   cursor: pointer;
   width: fit-content;
 }
-/* Category input */
+
 #category {
   background-color: #f8f9fa;
   border: none;

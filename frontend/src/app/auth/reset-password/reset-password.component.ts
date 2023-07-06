@@ -39,7 +39,7 @@ export class ResetPasswordComponent {
             positionClass: 'toast-top-right',
           }
         );
-        this.router.navigate(['/login']); // Redirect to the login page after successful password reset
+        this.router.navigate(['/login']); 
       },
       (error: any) => {
         console.log(error);

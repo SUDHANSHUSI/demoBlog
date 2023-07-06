@@ -115,7 +115,6 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   likePost(postId: string) {
     this.postsService.likePost(postId).subscribe(
       () => {
-        console.log('Post liked successfully');
         this.post.isLiked = true;
         this.post.likeCount++;
         this.likedPosts.push(postId);
@@ -130,7 +129,6 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   unlikePost(postId: string) {
     this.postsService.unlikePost(postId).subscribe(
       () => {
-        console.log('Post unliked successfully');
         this.post.isLiked = false;
         this.post.likeCount--;
         const index = this.likedPosts.indexOf(postId);

@@ -5,7 +5,6 @@ import { mimeType } from '../../posts/create-post/mime-type.validator';
 import { ProfileService } from '../../services/profile.service';
 import { Profile } from '../profile.model';
 import { ToastrService } from 'ngx-toastr';
-// import { Event } from '@angular/router';
 
 
 @Component({
@@ -95,16 +94,6 @@ export class CreateProfileComponent implements OnInit {
     });
   }
 
-  // onImagePicked(event: Event) {
-  //   const file = (event.target as HTMLInputElement).files[0];
-  //   this.form.patchValue({ image: file });
-  //   this.form.get("image")?.updateValueAndValidity();
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     this.imagePreview = reader.result as string;
-  //   };
-  //   reader.readAsDataURL(file);
-  // }
   onImagePicked(event: Event) {
   const fileInput = event.target as HTMLInputElement;
   if (fileInput && fileInput.files && fileInput.files.length > 0) {
@@ -152,24 +141,7 @@ export class CreateProfileComponent implements OnInit {
     this.error = ''
   }
 
-  // checkUsername(uname:string) {
-  //   this.profileService.getProfileByUsername(uname).subscribe(profile => {
-  //     if (profile && uname !== this.uname) {
-  //       this.error = "Username is already taken!"
-  //     }
-
-  //   })
-  // }
-//   checkUsername(uname: string | null | undefined) {
-//   if (uname) {
-//     this.profileService.getProfileByUsername(uname).subscribe((profile) => {
-//       if (profile && uname !== this.uname) {
-//         this.error = "Username is already taken!";
-//       }
-//     });
-//   }
-// }
-checkUsername(event: Event) {
+  checkUsername(event: Event) {
   const uname = (event.target as HTMLInputElement).value;
   this.profileService.getProfileByUsername(uname).subscribe((profile) => {
     if (profile && uname !== this.uname) {
@@ -177,6 +149,5 @@ checkUsername(event: Event) {
     }
   });
 }
-
 
 }

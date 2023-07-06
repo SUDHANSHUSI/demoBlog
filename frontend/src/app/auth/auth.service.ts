@@ -70,7 +70,7 @@ export class AuthService {
 }
 
 signupUser(email: string, password: string): Observable<any> {
-  const authData: AuthData = { email: email, password: password };
+  const authData: AuthData = {name:"name", email: email, password: password };
   return this.http.post(BACKEND_URL + "signup", authData).pipe(
     tap(response => {
       this.err.next(null);

@@ -197,6 +197,7 @@ router.post("/:id/like", checkAuth, async (req, res) => {
     const userId = req.userData.userId;
 
     const post = await Post.findById(postId);
+    const user = await User.findById(userId);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found!" });
@@ -205,18 +206,18 @@ router.post("/:id/like", checkAuth, async (req, res) => {
     const userLiked = post.likes.includes(userId);
 
     if (userLiked) {
-      // Unlike the post
       post.likes.pull(userId);
       post.likeCount -= 1;
     } else {
-      // Like the post
       post.likes.push(userId);
       post.likeCount += 1;
     }
 
     await post.save();
 
-    res.status(200).json({ message: "Toggle like successful!", post });
+    res
+      .status(200)
+      .json({ message: "Toggle like successful!", post: { ...post, user } });
   } catch (error) {
     res.status(500).json({ message: "Error toggling like" });
   }
@@ -238,7 +239,6 @@ router.post("/:id/unlike", checkAuth, async (req, res) => {
     const userLiked = post.likes.includes(userId);
 
     if (userLiked) {
-      // Unlike the post
       post.likes.pull(userId);
       post.likeCount -= 1;
 
@@ -253,11 +253,11 @@ router.post("/:id/unlike", checkAuth, async (req, res) => {
   }
 });
 
-
 /////////////////////////////////////////// ADD COMMENT ///////////////////////////////////////////////////////
 
 router.post("/:postId/comment", checkAuth, async (req, res) => {
   const post = await Post.findById(req.params.postId);
+  const user = await User.findById(req.userData.userId);
 
   if (!post) {
     return "Post Not Found", 404;
@@ -269,6 +269,7 @@ router.post("/:postId/comment", checkAuth, async (req, res) => {
 
   const newComment = {
     user: req.userData.userId,
+    name: user.name,
     comment: req.body.comment,
   };
   post.comments.unshift(newComment);

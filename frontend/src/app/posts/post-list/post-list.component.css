@@ -44,7 +44,6 @@
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  /* height: 300px; */
 }
 
 .podcast-entry .text {
@@ -103,7 +102,7 @@
   padding: 25px;
 }
 }
-/* Categories Section */
+
 .categories {
   margin-top: 50px;
 }

@@ -1,5 +1,4 @@
 const express = require("express");
-
 const multer = require("multer");
 const checkAuth = require("../middlewares/check-auth");
 const Profile = require("../models/profile");
@@ -145,7 +144,6 @@ router.get("/profiles", async (req, res, next) => {
 ////////////////////////////////////////VIEW PROFILE////////////////////////////////////////////////////////////
 
 router.get("/viewprofile", checkAuth, async (req, res, next) => {
-  // console.log("first");
   try {
     const prof = await Profile.findOne({
       creator: req.userData.userId,

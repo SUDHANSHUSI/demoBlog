@@ -21,6 +21,7 @@ router.post("/signup", async (req, res, next) => {
     }
 
     const user = new User({
+      name: req.body.name,
       email: req.body.email,
       password: req.body.password,
     });
@@ -93,11 +94,10 @@ router.post("/login", async (req, res, next) => {
 
 ////////////////////////////////////////////////// FORGOT PASSOWRD/////////////////////////////////////////////////
 
-// generates a random token for forgot password functionality
 const generateToken = () => {
   return crypto.randomBytes(32).toString("hex");
 };
-// hashes the same token for reset password functionality
+
 const hashToken = (token) => {
   const sha256 = crypto.createHash("sha256");
   sha256.update(token);
@@ -139,7 +139,7 @@ router.post("/forgotPassword", async (req, res, next) => {
 
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    await delay(600000); // Wait for 10 mins
+    await delay(600000); 
     user.passwordResetToken = undefined;
     await user.save({ validateBeforeSave: false });
     console.log("Password reset token deleted successfully");

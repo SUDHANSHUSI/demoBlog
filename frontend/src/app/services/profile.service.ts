@@ -103,28 +103,6 @@ export class ProfileService {
       );
   }
 
-  // getProfile() {
-  //   this.http
-  //     .get<{ profile: any; message: string }>(BACKEND_URL + '/profiles')
-  //     .subscribe(
-  //       (response) => {
-  //         console.log(response);
-  //         const sortedProfiles = response.profile;
-  //         if (sortedProfiles.length > 0) {
-  //           this.profile = sortedProfiles;
-  //           this.isProfileSet = true;
-  //           this.updatedProfile.next(sortedProfiles);
-  //           this.saveProfileData(sortedProfiles);
-  //         } else {
-  //           console.log('profile not found');
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
-
   getProfileByCreatorId() {
     return this.http.get<{ profile: any; message: string }>(
       BACKEND_URL + '/viewprofile'
