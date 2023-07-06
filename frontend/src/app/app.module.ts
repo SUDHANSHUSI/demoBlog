@@ -18,7 +18,6 @@ import { AuthGuard } from './auth/auth.guard';
 import { MypostsComponent } from './posts/myposts/myposts.component';
 import { CreateProfileComponent } from './profile/create-profile/create-profile.component';
 import { ViewProfileComponent } from './profile/view-profile/view-profile.component';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { FooterComponent } from './footer/footer.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
@@ -66,7 +65,6 @@ import { MarkdownModule } from 'ngx-markdown';
     AuthService,
     AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],
 })

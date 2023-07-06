@@ -1,14 +1,13 @@
 const path = require("path");
 const express = require("express");
-const mongoose = require("mongoose");
-const db = require("./db/db");
+ require("./db/db");
 const header_middleware = require("./middlewares/header");
 
 const postRouter = require("./Routes/post");
 const userRoutes = require("./Routes/user");
 const profileRoutes = require("./Routes/profile");
 
-var cors = require("cors");
+const cors = require("cors");
 
 const app = express();
 app.use(cors({ origin: "*" }));
@@ -22,6 +21,6 @@ app.use("/images", express.static(directory));
 app.use("/api/posts", postRouter);
 app.use("/api/user", userRoutes);
 app.use("/api/profile", profileRoutes);
-app.listen(PORT, (req, res) => {
+app.listen(PORT, () => {
   console.log(`Server is listening to PORT ${PORT}....`);
 });
