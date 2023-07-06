@@ -72,10 +72,6 @@ export class ProfileService {
         bio: bio,
         imagePath: image,
         creator: '',
-        followers:[],
-        following:[],
-        followersCount:0,
-        followingCount:0,
       };
     }
 
@@ -91,44 +87,43 @@ export class ProfileService {
     );
   }
 
-  // getProfile() {
-  //   this.http
-  //     .get<{ profile: any; message: string }>(BACKEND_URL + '/viewprofile')
-  //     .subscribe(
-  //       (profile) => {
-  //         console.log(profile);
-  //         let prof = profile.profile;
-  //         this.profile = prof;
-  //         this.isProfileSet = true;
-  //         this.updatedProfile.next(profile.profile);
-  //         this.saveProfileData(profile.profile);
-  //       },
-  //       (err) => {}
-  //     );
-  // }
-
   getProfile() {
     this.http
-      .get<{ profile: any; message: string }>(BACKEND_URL + '/profiles')
+      .get<{ profile: any; message: string }>(BACKEND_URL + '/viewprofile')
       .subscribe(
-        (response) => {
-          console.log(response);
-          const sortedProfiles = response.profile;
-          if (sortedProfiles.length > 0) {
-            this.profile = sortedProfiles;
-            this.isProfileSet = true;
-            this.updatedProfile.next(sortedProfiles);
-            this.saveProfileData(sortedProfiles);
-          } else {
-            console.log("profile not found");
-          }
+        (profile) => {
+          console.log(profile);
+          let prof = profile.profile;
+          this.profile = prof;
+          this.isProfileSet = true;
+          this.updatedProfile.next(profile.profile);
+          this.saveProfileData(profile.profile);
         },
-        (err) => {
-          console.log(err);
-        }
+        (err) => {}
       );
   }
-  
+
+  // getProfile() {
+  //   this.http
+  //     .get<{ profile: any; message: string }>(BACKEND_URL + '/profiles')
+  //     .subscribe(
+  //       (response) => {
+  //         console.log(response);
+  //         const sortedProfiles = response.profile;
+  //         if (sortedProfiles.length > 0) {
+  //           this.profile = sortedProfiles;
+  //           this.isProfileSet = true;
+  //           this.updatedProfile.next(sortedProfiles);
+  //           this.saveProfileData(sortedProfiles);
+  //         } else {
+  //           console.log('profile not found');
+  //         }
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //       }
+  //     );
+  // }
 
   getProfileByCreatorId() {
     return this.http.get<{ profile: any; message: string }>(
@@ -170,25 +165,5 @@ export class ProfileService {
     if (profile) {
       this.isProfileSet = true;
     }
-  }
-
-  followProfile(profileId: string) {
-    return this.http
-      .post<{ message: string }>(`${BACKEND_URL}/follow/${profileId}`, {})
-      .pipe(
-        map((response) => {
-          return response.message;
-        })
-      );
-  }
-
-  unfollowProfile(profileId: string) {
-    return this.http
-      .post<{ message: string }>(`${BACKEND_URL}/unfollow/${profileId}`, {})
-      .pipe(
-        map((response) => {
-          return response.message;
-        })
-      );
-  }
+  }   
 }

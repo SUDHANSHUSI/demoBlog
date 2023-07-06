@@ -31,6 +31,9 @@ const storage = multer.diskStorage({
 
 const router = express.Router();
 
+
+/////////////////////////////////////////////// CREATE PROFILE./////////////////////////////////////////////////////
+
 router.post(
   "/create",
   checkAuth,
@@ -73,6 +76,8 @@ router.post(
   }
 );
 
+////////////////////////////////////////EDIT PROFILE //////////////////////////////////////////////////
+
 router.put(
   "/edit/:id",
   checkAuth,
@@ -111,6 +116,7 @@ router.put(
     }
   }
 );
+////////////////////////////////////////GET ALL PROFILES////////////////////////////////////////////////////////
 
 router.get("/profiles", async (req, res, next) => {
   try {
@@ -136,25 +142,14 @@ router.get("/profiles", async (req, res, next) => {
   }
 });
 
+////////////////////////////////////////VIEW PROFILE////////////////////////////////////////////////////////////
+
 router.get("/viewprofile", checkAuth, async (req, res, next) => {
   // console.log("first");
   try {
     const prof = await Profile.findOne({
       creator: req.userData.userId,
-    })
-      .populate({
-        path: "following",
-        select: "username _id",
-      })
-      .populate({
-        path: "followers",
-        select: "_id username",
-      });
-
-    // console.log("prof.followers.length", prof.followers);
-
-    prof.followersCount = prof.followers.length;
-    prof.followingCount = prof.following.length;
+    });
     await prof.save();
 
     if (prof) {
@@ -170,6 +165,8 @@ router.get("/viewprofile", checkAuth, async (req, res, next) => {
     res.status(500).json({ message: "Error fetching profile" });
   }
 });
+
+//////////////////////////////////////////////////GET PROFILE BY CREATORID////////////////////////////////////////////////
 
 router.get("/bycreator/:id", async (req, res, next) => {
   try {
@@ -187,6 +184,7 @@ router.get("/bycreator/:id", async (req, res, next) => {
     res.status(500).json({ message: "Error fetching profile" });
   }
 });
+///////////////////////////////GET POST BY PROFILE ID/////////////////////////////////
 
 router.get("/:id/mypost", async (req, res, next) => {
   try {
@@ -209,9 +207,12 @@ router.get("/:id/mypost", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
+
+//////////////////////////////////////GET PROFILE BY ID////////////////////////////////////////////////////////////
+
+router.get("/:id", async (req, res) => {
   try {
-    const prof = await Profile.findOne({ username: req.params.id });
+    const prof = await Profile.findOne({ username: req.params.id })
     if (prof) {
       res.status(200).json({
         message: "Profile fetched successfully!",
@@ -223,75 +224,6 @@ router.get("/:id", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error fetching profile" });
-  }
-});
-
-// Follow Profile
-router.post("/follow/:id", checkAuth, async (req, res, next) => {
-  try {
-    const profile = await Profile.findById(req.params.id);
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-
-    const currentLoggedInProfile = await Profile.findOne({
-      creator: req.userData.userId,
-    });
-    if (!currentLoggedInProfile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-
-    if (currentLoggedInProfile.following.includes(req.params.id)) {
-      return res
-        .status(400)
-        .json({ message: "Already following this profile" });
-    }
-
-    currentLoggedInProfile.following.push(req.params.id);
-    profile.followers.push(currentLoggedInProfile._id);
-
-    await profile.save();
-    await currentLoggedInProfile.save();
-
-    res.status(200).json({ message: "Successfully followed the profile" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error following profile" });
-  }
-});
-
-// Unfollow Profile
-router.post("/unfollow/:id", checkAuth, async (req, res, next) => {
-  try {
-    const profile = await Profile.findById(req.params.id);
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-
-    const currentLoggedInProfile = await Profile.findOne({
-      creator: req.userData.userId,
-    });
-    if (!currentLoggedInProfile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-
-    if (!currentLoggedInProfile.following.includes(req.params.id)) {
-      return res.status(400).json({ message: "Not following this profile" });
-    }
-
-    const index = currentLoggedInProfile.following.indexOf(req.params.id);
-    currentLoggedInProfile.following.splice(index, 1);
-
-    const followerIndex = profile.followers.indexOf(req.userData.userId);
-    profile.followers.splice(followerIndex, 1);
-
-    await profile.save();
-    await currentLoggedInProfile.save();
-
-    res.status(200).json({ message: "Successfully unfollowed the profile" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error unfollowing profile" });
   }
 });
 

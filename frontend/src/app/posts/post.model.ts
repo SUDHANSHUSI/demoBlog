@@ -1,4 +1,5 @@
 export interface Post {
+  isLiked: boolean;
   id: string;
   title: string;
   content: string;

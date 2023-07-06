@@ -160,6 +160,7 @@ export class PostService {
         likes: [],
         comments: [],
         likeCount: 0,
+        isLiked:false,
       };
     }
     this.http.put(BACKEND_URL + '/' + id, postData).subscribe(
@@ -201,24 +202,65 @@ export class PostService {
     );
   }
 
-  likePost(
-    postId: string
-  ): Observable<{ success: boolean; message: string; likeCount: number }> {
+  likePost(postId: string) {
     if (!this.authService.getIsAuth()) {
-      this.toastr.warning('Please log in to like the post.', 'Login Required');
+      this.toastr.warning('Please log in to like a post.', 'Login Required');
       this.router.navigate(['/login']);
-      return this.http.get<{
-        success: boolean;
-        message: string;
-        likeCount: number;
-      }>(`${BACKEND_URL}/${postId}/likes`);
+      return EMPTY;
     }
-    return this.http.get<{
-      success: boolean;
-      message: string;
-      likeCount: number;
-    }>(`${BACKEND_URL}/${postId}/likes`);
+
+    return this.http
+      .post<{ success: boolean; message: string }>(
+        `${BACKEND_URL}/${postId}/like`,
+        {}
+      )
+      .pipe(
+        tap(() => {
+          const post = this.posts.find((p) => p.id === postId);
+          if (post) {
+            post.likes.push(this.authService.getUserId());
+            post.likeCount += 1;
+            this.postsUpdated.next([...this.posts]);
+          }
+        }),
+        catchError((error) => {
+          console.error(error);
+          return throwError(error);
+        })
+      );
   }
+
+  unlikePost(postId: string) {
+    if (!this.authService.getIsAuth()) {
+      this.toastr.warning('Please log in to unlike a post.', 'Login Required');
+      this.router.navigate(['/login']);
+      return EMPTY;
+    }
+
+    return this.http
+      .post<{ success: boolean; message: string }>(
+        `${BACKEND_URL}/${postId}/unlike`,
+        {}
+      )
+      .pipe(
+        tap(() => {
+          const post = this.posts.find((p) => p.id === postId);
+          if (post) {
+            const index = post.likes.indexOf(this.authService.getUserId());
+            if (index > -1) {
+              post.likes.splice(index, 1);
+              post.likeCount -= 1;
+              this.postsUpdated.next([...this.posts]);
+            }
+          }
+        }),
+        catchError((error) => {
+          console.error(error);
+          return throwError(error);
+        })
+      );
+  }
+
 
 addComment(postId: string, comment: string) {
   if (!this.authService.getIsAuth()) {
@@ -249,32 +291,6 @@ addComment(postId: string, comment: string) {
     );
 }
 
-
-  // searchPosts(searchTerm: string): Observable<Post[]> {
-  //   const queryParams = { q: searchTerm };
-  //   return this.http
-  //     .get<{ message: string; posts: any }>(`${BACKEND_URL}/search/post`, {
-  //       params: queryParams,
-  //     })
-  //     .pipe(
-  //       map((responseData) => {
-  //         return responseData.posts.map((post: any) => {
-  //           return {
-  //             title: post.title,
-  //             content: post.content,
-  //             id: post._id,
-  //             imagePath: post.imagePath,
-  //             creator: post.creator,
-  //             postDate: post.postDate,
-  //             category: post.category,
-  //             likes: post.likes,
-  //             comments: post.comments,
-  //             likeCount: post.likeCount,
-  //           };
-  //         });
-  //       })
-  //     );
-  // }
   searchPosts(searchTerm: string): Observable<Post[]> {
     const queryParams = new HttpParams().set('q', searchTerm);
     return this.http.get<{ message: string; posts: any }>(`${BACKEND_URL}/search/post`, {

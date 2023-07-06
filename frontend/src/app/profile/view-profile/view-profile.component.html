@@ -11,24 +11,7 @@
         [routerLink]="['../edit', profileId]"
         >Edit Profile</a
       >
-      <p>{{ profile.bio }}</p>
-      <div *ngIf="userId !== profile.creator">
-        <a
-          *ngIf="!isFollowing"
-          href="#"
-          (click)="followProfile()"
-          class="btn btn-link"
-          >Follow</a
-        >
-        <h1>{{ isFollowing }}</h1>
-        <a
-          *ngIf="isFollowing"
-          href="#"
-          (click)="unfollowProfile()"
-          class="btn btn-link"
-          >Unfollow</a
-        >
-      </div>
+      <p>{{ profile.bio }}</p>      
     </div>
 
     <div class="col-md-4 col-xs-12 order-1 order-lg-2">
@@ -36,93 +19,6 @@
         src="{{ profile.imagePath }}"
         class="img-fluid w-50 rounded-circle mb-3"
       />
-    </div>
-  </div>
-
-  <div class="row mt-5">
-    <div class="col-md-6">
-      <a
-        *ngIf="profile?.followersCount && profile.followersCount > 0"
-        href="#"
-        class="btn btn-link"
-        data-toggle="modal"
-        data-target="#followersModal"
-        >Followers: {{ profile?.followersCount || 0 }}</a
-      >
-
-      <div
-        class="modal fade"
-        id="followersModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="followersModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="followersModalLabel">Followers</h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <ul>
-                <li *ngFor="let follower of profile.followers">
-                  {{ follower }}
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <a
-        *ngIf="profile?.followingCount && profile.followingCount > 0"
-        href="#"
-        class="btn btn-link"
-        data-toggle="modal"
-        data-target="#followingModal"
-        >Following: {{ profile.followingCount || 0 }}</a
-      >
-
-      <div
-        class="modal fade"
-        id="followingModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="followingModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="followingModalLabel">Following</h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <ul>
-                <li *ngFor="let following of profile.following">
-                  {{ following }}
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>

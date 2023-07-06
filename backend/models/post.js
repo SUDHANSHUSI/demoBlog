@@ -5,7 +5,6 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   content: {
     type: String,
     required: true,
@@ -14,23 +13,25 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   postDate: {
     type: String,
     required: true,
   },
-
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
   likes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    {      
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     },
   ],
+  likeCount: {
+        type: Number,
+        default: 0,
+      },
   comments: [
     {
       user: {
@@ -44,16 +45,11 @@ const postSchema = new mongoose.Schema({
       },
     },
   ],
-  likeCount: {
-    type: Number,
-    default: 0,
-  },
   category: {
     type: String,
     required: true,
   },
 });
-
-const Post = new mongoose.model("Post", postSchema);
+const Post = mongoose.model("Post", postSchema);
 
 module.exports = Post;

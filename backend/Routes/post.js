@@ -3,6 +3,7 @@ const Post = require("../models/post");
 const router = express.Router();
 const multer = require("multer");
 const checkAuth = require("../middlewares/check-auth");
+const User = require("../models/user");
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
@@ -189,42 +190,72 @@ router.delete("/:id", checkAuth, async (req, res) => {
   }
 });
 
-// Like or Unlike Post
+//////////////////////////////////// LIKE POSTS/////////////////////////////////////////////////
+router.post("/:id/like", checkAuth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userData.userId;
 
-router.get("/:postId/likes", checkAuth, async (req, res) => {
-  const post = await Post.findById(req.params.postId);
+    const post = await Post.findById(postId);
 
-  if (!post) {
-    return "Post Not Found", 404;
-  }
+    if (!post) {
+      return res.status(404).json({ message: "Post not found!" });
+    }
 
-  if (post.likes.includes(req.userData.userId)) {
-    const index = post.likes.indexOf(req.userData.userId);
+    const userLiked = post.likes.includes(userId);
 
-    post.likes.splice(index, 1);
-    post.likeCount -= 1;
+    if (userLiked) {
+      // Unlike the post
+      post.likes.pull(userId);
+      post.likeCount -= 1;
+    } else {
+      // Like the post
+      post.likes.push(userId);
+      post.likeCount += 1;
+    }
+
     await post.save();
 
-    return res.status(200).json({
-      success: true,
-      message: "Post Unliked",
-      likeCount: post.likes.length,
-    });
-  } else {
-    post.likes.push(req.userData.userId);
-    post.likeCount += 1; // Increment like count
-
-    await post.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Post Liked",
-      likeCount: post.likes.length,
-    });
+    res.status(200).json({ message: "Toggle like successful!", post });
+  } catch (error) {
+    res.status(500).json({ message: "Error toggling like" });
   }
 });
 
-// Add Comment
+////////////////////////////////////////////////UNLIKE POSTS /////////////////////////////////////////////////////
+
+router.post("/:id/unlike", checkAuth, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.userData.userId;
+
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found!" });
+    }
+
+    const userLiked = post.likes.includes(userId);
+
+    if (userLiked) {
+      // Unlike the post
+      post.likes.pull(userId);
+      post.likeCount -= 1;
+
+      await post.save();
+
+      res.status(200).json({ message: "Post unliked successfully!" });
+    } else {
+      res.status(400).json({ message: "You have not liked this post!" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error unliking post" });
+  }
+});
+
+
+/////////////////////////////////////////// ADD COMMENT ///////////////////////////////////////////////////////
+
 router.post("/:postId/comment", checkAuth, async (req, res) => {
   const post = await Post.findById(req.params.postId);
 
@@ -242,10 +273,7 @@ router.post("/:postId/comment", checkAuth, async (req, res) => {
   };
   post.comments.unshift(newComment);
 
-  
   await post.save();
-
-
 
   return res.status(200).json({
     success: true,
@@ -254,7 +282,7 @@ router.post("/:postId/comment", checkAuth, async (req, res) => {
   });
 });
 
-///////////////////////////////////////////////// GET POSTS BY CATEGORY ////////////////////////////////////////////////////
+///////////////////////////////////////////////// GET POSTS BY CATEGORY ///////////////////////////////////////////////////
 
 router.get("/category/:category", async (req, res) => {
   try {
@@ -321,6 +349,36 @@ router.get("/search/post", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error searching post" });
   }
+});
+
+////////////////////////////////////////// LIKE LIST ///////////////////////////////////////////////////
+
+router.get("/likeList/:postId", async (req, res) => {
+  const post = await Post.findById(req.params.postId).populate({
+    path: "likes",
+    select: "_id email",
+    // populate: {
+    //   path: "_id",
+    //   model: User,
+    //   ref: "User",
+    //   populate: {
+    //     path: "userProfile",
+    //     select:
+    //       "username bio imagePath followers following followersCount followingCount",
+    //   },
+    // },
+  });
+
+  if (!post) {
+    return res.json({
+      status: "fail",
+      msg: "Post not found",
+    });
+  }
+
+  return res.status(200).json({
+    post,
+  });
 });
 
 module.exports = router;

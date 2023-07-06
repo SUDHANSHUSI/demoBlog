@@ -6,7 +6,6 @@ const profileSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-
   bio: {
     type: String,
     required: true,
@@ -14,24 +13,6 @@ const profileSchema = new mongoose.Schema({
   imagePath: {
     type: String,
     required: true,
-  },
-  followers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Profile",
-    },
-  ],
-  following: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Profile",
-    },
-  ],
-  followersCount: {
-    type: Number,
-  },
-  followingCount: {
-    type: Number,
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,

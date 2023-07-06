@@ -15,14 +15,10 @@ import { ToastrService } from 'ngx-toastr';
 export class ViewProfileComponent implements OnInit {
   profileId!: string;
   isloading: boolean = false;
-  // profile!: Profile;
-  profile: any = { followersCount: 0 };
-  posts: Post[] = [];
+  profile!: Profile;
+  posts: Post[] = [];           
   url: any;
   userId!: string;
-  isFollowing: boolean = false;
-  showFollowersModal: boolean = false;
-  showFollowingModal: boolean = false;
 
   constructor(
     private profileService: ProfileService,
@@ -51,11 +47,8 @@ export class ViewProfileComponent implements OnInit {
   getProfileByUsername(uname: string) {
     this.isloading = true;
     this.profileService.getProfileByUsername(uname).subscribe((profile) => {
-      console.log('haaaaaaaaaaaaaa', profile);
       this.profile = profile.profile;
-      this.checkIfFollowing();
       this.isloading = false;
-      // this.profileId=this.profile._id;
     });
   }
 
@@ -81,77 +74,5 @@ export class ViewProfileComponent implements OnInit {
         this.isloading = false;
         this.posts = data;
       });
-  }
-
-  followProfile() {
-    if (!this.isFollowing) {
-      if (this.authService.isLoggedIn()) {
-        this.profileService
-          .followProfile(this.profile._id)
-          .subscribe((message) => {
-            this.toastr.success(
-              'successfully followed this profile.',
-              'Success'
-            );
-            this.isFollowing = true;
-            // console.log('follow===========' + this.isFollowing);
-            this.router.navigate(['/profile']);
-          });
-      } else {
-        this.toastr.warning(
-          'Please login to follow this profile.',
-          'Login Required'
-        );
-        this.router.navigate(['/login']);
-      }
-    }
-  }
-
-  unfollowProfile() {
-    if (this.isFollowing) {
-      if (this.authService.isLoggedIn()) {
-        this.profileService
-          .unfollowProfile(this.profile._id)
-          .subscribe((message) => {
-            this.toastr.success(
-              'successfully unfollowed this profile.',
-              'Success'
-            );
-            // console.log('unfollow=========');
-
-            this.isFollowing = false;
-            this.router.navigate(['/profile']);
-          });
-      } else {
-        this.toastr.warning(
-          'Please login to unfollow this profile.',
-          'Login Required'
-        );
-        this.router.navigate(['/login']);
-      }
-    }
-  }
-
-  checkIfFollowing() {
-    debugger;
-    if (this.profile.followers.includes(this.profile._id)) {
-      this.isFollowing = true;
-    }
-  }
-
-  openFollowersModal() {
-    this.showFollowersModal = true;
-  }
-
-  openFollowingModal() {
-    this.showFollowingModal = true;
-  }
-
-  closeFollowersModal() {
-    this.showFollowersModal = false;
-  }
-
-  closeFollowingModal() {
-    this.showFollowingModal = false;
   }
 }

@@ -5,7 +5,6 @@ import { Post } from '../post.model';
 import { AuthService } from '../../auth/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { Profile } from '../../profile/profile.model';
-import { LikeService } from 'src/app/services/like.service';
 
 @Component({
   selector: 'app-myposts',
@@ -26,7 +25,6 @@ export class MypostsComponent implements OnInit, OnDestroy {
     private ps: PostService,
     private authService: AuthService,
     private profileService: ProfileService,
-    private likeService: LikeService
   ) {}
 
   ngOnInit(): void {
@@ -38,14 +36,7 @@ export class MypostsComponent implements OnInit, OnDestroy {
         this.getPostUserbyCreatorId(posts);
         this.isloading = false;
         this.posts = posts;
-        posts.forEach((post) => {
-          this.isLiked[post.id] = this.likeService.isPostLiked(post.id);
-        });
-      },
-      (e) => {
-        this.isloading = false;
-        this.error = e;
-      }
+      },      
     );
   }
 

@@ -6,7 +6,6 @@ import { ProfileService } from 'src/app/services/profile.service';
 import { AuthService } from '../../auth/auth.service';
 import { PostService } from '../../services/post.service';
 import { Post } from '../post.model';
-import { LikeService } from 'src/app/services/like.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -25,15 +24,14 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   private authStatusSub!: Subscription;
   profile: any;
   comment: any;
-  isLiked: boolean = false;
+  likedPosts: string[] = [];
 
   constructor(
     public postsService: PostService,
     public route: ActivatedRoute,
     public router: Router,
     private authService: AuthService,
-    public profileService: ProfileService,
-    private likeService: LikeService
+    public profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
@@ -46,18 +44,14 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       if (paramMap.has('postId')) {
         this.postId = paramMap.get('postId') ?? '';
         if (this.postId) {
-          this.initLikedPosts();
-          this.isLiked = this.likeService.isPostLiked(this.postId);
           this.getPostById(this.postId);
         }
       }
-    });
-  }
-
-  private async initLikedPosts() {
-    const likedPosts = await this.likeService.getLikedPosts();
-    this.isLiked = likedPosts.includes(this.postId);
-  }
+    });   
+    const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+    this.likedPosts = likedPosts;
+   }
+  
 
   authData() {
     this.isAuth = this.authService.getIsAuth();
@@ -93,6 +87,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           likes: [],
           comments: postData.comments,
           likeCount: postData.likes.length,
+          isLiked: postData.likes.includes(this.userId),
         };
         this.getPostUserByCreatorId(postData.creator);
         this.isloading = false;
@@ -104,28 +99,44 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     );
   }
 
+  updateLikedStatus() {
+    if (this.userIsAuthenticated && this.post.likes.includes(this.userId)) {
+      this.post.isLiked = true;
+    } else {
+      this.post.isLiked = false;
+    }
+  }
+
   OnDelete(postId: string) {
     this.postsService.deletePost(postId);
   }
 
-  onLike(postId: string) {
+
+  likePost(postId: string) {
     this.postsService.likePost(postId).subscribe(
-      (responseData) => {
-        if (this.post) {
-          this.post.likes = responseData.success
-            ? this.post.likes.filter(
-                (userId: any) => userId !== responseData.message
-              )
-            : [...this.post.likes, responseData.message];
-          this.post.likeCount = responseData.likeCount;
-          this.isLiked = responseData.success ? !this.isLiked : this.isLiked;
-        }
-        if (responseData.success) {
-          if (this.isLiked) {
-            this.likeService.addLikedPost(postId);
-          } else {
-            this.likeService.removeLikedPost(postId);
-          }
+      () => {
+        console.log('Post liked successfully');
+        this.post.isLiked = true;
+        this.post.likeCount++;
+        this.likedPosts.push(postId);
+        this.updateLikedPostsStorage();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  unlikePost(postId: string) {
+    this.postsService.unlikePost(postId).subscribe(
+      () => {
+        console.log('Post unliked successfully');
+        this.post.isLiked = false;
+        this.post.likeCount--;
+        const index = this.likedPosts.indexOf(postId);
+        if (index > -1) {
+          this.likedPosts.splice(index, 1);
+          this.updateLikedPostsStorage();
         }
       },
       (error) => {
@@ -134,7 +145,21 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-    onAddComment(postId: string, comment: string) {
+
+  updateLikedPostsStorage() {
+    localStorage.setItem('likedPosts', JSON.stringify(this.likedPosts));
+  }
+
+  toggleLike(postId: string) {
+    if (this.post.isLiked) {
+      this.unlikePost(postId);
+    } else {
+      this.likePost(postId);
+    }
+  }
+
+
+  onAddComment(postId: string, comment: string) {
     this.postsService.addComment(postId, comment).subscribe(
       (newComment) => {
         this.comment = '';

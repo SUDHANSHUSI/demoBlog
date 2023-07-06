@@ -111,22 +111,21 @@
 
         <p>{{ post.content }}</p>
         <div>
-          <button class="like-button" (click)="onLike(post.id)">
-            <mat-icon class="like-icon" [ngClass]="{ liked: isLiked }"
-              >favorite_border</mat-icon
-            >
-          </button>
-
-          <span>{{ post.likeCount }}</span>
-        </div>
-        <br />      
-
+        <button mat-icon-button color="primary" (click)="toggleLike(post.id)">
+          <mat-icon>{{
+            post.isLiked ? "favorite" : "favorite_border"
+          }}</mat-icon>
+        </button>
+        <span>{{ post.likeCount }}</span>
+      </div>        
+        <br />   
         <div>
           <h3>
             <a data-toggle="collapse" href="#commentsCollapse" role="button"
               >Comments:</a
             >
           </h3>
+          <br>
           <div id="commentsCollapse" class="collapse">
             <ul>
               <li *ngFor="let comment of post.comments">
